@@ -1,10 +1,14 @@
+const container = document.querySelector(".container")
+const scoreDiv = document.querySelector(".results")
+scoreDiv.innerText = "player: 0, comp: 0"
+const buttons = Array.from(document.querySelectorAll("button"))
+
 function makeClear(string){
     let newString = string.toLowerCase().split("")
     newString[0] = newString[0].toUpperCase()
     return newString.join("")
 }
-
-//the name makeClear doesn't really describe the function well
+// the name makeClear doesn't really describe the function well
 
 function getComputerChoice(){
     let rockPaperScissors = ["rock", "paper", "scissors"]
@@ -35,26 +39,39 @@ function whoWon(player, comp){
     }
 }
 
-function game(func, compRand){
+function game (arr, func) {
     let playerScore = 0
     let compScore = 0
-    for(let i = 0; i < 5; i ++){
-        let player = prompt("what's your choice")
-        let comp = compRand()
-        let result = func(player, comp)
-        console.log(result)
-        if(result.includes("Win")){
-            playerScore ++
-        } else if(result.includes("Lose")){
-            compScore ++
-        } else {
-            playerScore ++
-            compScore ++
-        }
+    for (let i = 0; i < arr.length; i++) {
+        arr[i].addEventListener("click", (e)=> {
+            if (playerScore == 5 && compScore == 5) {
+                scoreDiv.innerText = "You Draw!"
+                return
+            } else if (compScore >= 5) {
+                scoreDiv.innerText = "You Lose!"
+                return
+            } else if (playerScore >= 5) {
+                scoreDiv.innerText = "You Win!"
+            } else {
+                let roundResult = func(e.target.innerText, getComputerChoice())
+                console.log(roundResult)
+                if(roundResult.includes("Win")){
+                    playerScore ++
+                    scoreDiv.innerText = `player :${playerScore}, comp: ${compScore}`
+                } else if(roundResult.includes("Lose")){
+                    compScore ++
+                    scoreDiv.innerText = `player :${playerScore}, comp: ${compScore}`
+                } else {
+                    playerScore ++
+                    compScore ++
+                    scoreDiv.innerText = `player :${playerScore}, comp: ${compScore}`
+            }
+            }
+        })
     }
-    (compScore > playerScore) ? console.log(`${playerScore} - ${compScore}, You Lost!!`) :
-    (playerScore > compScore) ? console.log(`${playerScore} - ${compScore}, You Win!!`) :
-    console.log("It's a Draw!!")
 }
 
-game(playSingleRound, getComputerChoice)
+game(buttons, playSingleRound)
+
+
+
